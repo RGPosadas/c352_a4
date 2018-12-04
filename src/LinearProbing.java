@@ -3,7 +3,7 @@ public class LinearProbing extends HashTable {
      * Attributes
      */
     private MyMapElement[] LPTable;
-    private MyMapElement AVAILABLE = new MyMapElement(0, null);
+    private MyMapElement AVAILABLE = new MyMapElement(0, "AVAILABLE");
     private static int totalCollisions = 0;
 
     /**
@@ -27,21 +27,23 @@ public class LinearProbing extends HashTable {
      */
     public String get(Integer k) {
         long start = System.nanoTime();
-        System.out.println("Now executing LinearProbing get()...");
+        System.out.println("Now executing LinearProbing get(" + k + ")...");
         int hashValue = getHashValue(k);
         // Loop through the whole LPTableay in a circular manner
         int i = 0;
         while (i < capacity) {
             // If index probed is empty
             if (LPTable[hashValue] == null) {
+                System.out.println("The key " + k + " was not found.");
                 long end = System.nanoTime();
-                System.out.println("It took " + ((end-start)/1000000) + "ms to run LinearProbing get(" + k + ").");
+                System.out.println("It took " + ((end-start)/1000000) + "ms to run LinearProbing get(" + k + ").\n");
                 return null;
             }
             // If index probed has the right key
             else if (LPTable[hashValue].getKey() == k) {
+                System.out.println("Found key " + k + ".");
                 long end = System.nanoTime();
-                System.out.println("It took " + ((end-start)/1000000) + "ms to run LinearProbing get(" + k + ").");
+                System.out.println("It took " + ((end-start)/1000000) + "ms to run LinearProbing get(" + k + ").\n");
                 return LPTable[hashValue].getValue();
             }
             // Move on
@@ -104,19 +106,26 @@ public class LinearProbing extends HashTable {
      */
     public String remove(Integer k) {
         long start = System.nanoTime();
-        System.out.println("Now executing LinearProbing remove()...");
+        System.out.println("Now executing LinearProbing remove(" + k + ")...");
         int hashValue = getHashValue(k);
         int i = 0;
         // Loop through the whole LPTableay in a circular manner
         while (i < capacity) {
             // If index is null
-            if (LPTable[hashValue] == null)
+            if (LPTable[hashValue] == null) {
+                System.out.println("Did not find key " + k + " to remove.");
+                long end = System.nanoTime();
+                System.out.println("It took " + ((end-start)/1000000) + "ms to run remove(" + k + ").\n");
                 return null;
+            }
             // If you found what you wanted to remove
             else if (LPTable[hashValue].getKey() == k) {
+                System.out.println("Found key " + k + " to remove.");
                 String temp = LPTable[hashValue].getValue();
                 LPTable[hashValue] = AVAILABLE;
                 size--;
+                long end = System.nanoTime();
+                System.out.println("It took " + ((end-start)/1000000) + "ms to run remove(" + k + ").\n");
                 return temp;
             }
             // Move on to next index
@@ -127,8 +136,15 @@ public class LinearProbing extends HashTable {
         }
         // If you get here, the key to be removed was not found
         long end = System.nanoTime();
-        System.out.println("It took " + ((end-start)/1000000) + "ms to run get(" + k + ").");
+        System.out.println("It took " + ((end-start)/1000000) + "ms to run remove(" + k + ").");
         return null;
+    }
+
+    public void display() {
+        for (int i = 0; i < LPTable.length; i++) {
+            System.out.print(LPTable[i].getValue() + " ");
+        }
+        System.out.println();
     }
     
 }
